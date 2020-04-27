@@ -38,7 +38,7 @@ Then you can run `submit.py` to check the result.
 
 # Known Issue
 
-- Incomplete Autofill #1
+- [Incomplete Autofill](https://github.com/TongboZhang/JLU_AUTO_SUBMISSION/issues/1)
 
 Please use xpath to fill in these items manually.
 
