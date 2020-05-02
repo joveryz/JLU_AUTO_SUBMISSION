@@ -15,14 +15,14 @@ Simple configuration is required, just Google it.
 
 ## Basic usage
 
-Please fill in the following vars.
+Please fill in the following vars. Multiple users can be filled in to submit.
 
 Use `logpath` to specify the log storage path, otherwise please leave it as it is.
 
 ```python
 # personal info
-username = "XXX"
-password =  "XXX"
+username = ["XXX", "XXX"]
+password = ["XXX", "XXX"]
 logpath = r""
 ```
 

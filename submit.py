@@ -7,10 +7,11 @@ import itertools
 import requests
 import time
 import json
+import sys
 
 # personal info
-username = "XXX"
-password =  "XXX"
+username = ["XXX", "XXX"]
+password = ["XXX", "XXX"]
 logpath = r""
 
 # Push
@@ -29,13 +30,13 @@ def write_log(logstr):
             f.write (logstr + "\n")
         f.close()
 
-def push_wechat():
-    global flag, secret, corpID, agentID
+def push_wechat(usern):
+    global flag, secret, corpID, agentID, toUser
     tokenUrl = "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid={}&corpsecret={}"
     postUrl = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={}"
     req = requests.get(url=tokenUrl.format(corpID,secret))
     acctoken = req.json().get('access_token')
-    constr = "{} Success".format(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+    constr = "{} {} Success".format(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()), str(usern))
     if not flag:
         constr = constr.replace("Success", "Failure")
     pushdata = {
@@ -54,8 +55,8 @@ def push_wechat():
         write_log("WeChat pushed failed: " + constr)
         write_log("Push error: " + str(ret.json()))
 
-def submit_form(count):
-    global flag, username, password, logpath
+def submit_form(count, usern, passw):
+    global flag, logpath
     chrome_options = webdriver.ChromeOptions()
     #chrome_options.add_argument("--log-level=3")
     browser = webdriver.Chrome(options = chrome_options)
@@ -64,8 +65,8 @@ def submit_form(count):
         # home page
         browser.get("https://ehall.jlu.edu.cn/")
         # login
-        browser.find_element_by_id("username").send_keys(username)
-        browser.find_element_by_id("password").send_keys(password)
+        browser.find_element_by_id("username").send_keys(usern)
+        browser.find_element_by_id("password").send_keys(passw)
         browser.find_element_by_id("login-submit").click()
         # submission page
         browser.get("https://ehall.jlu.edu.cn/infoplus/form/JLDX_YJS_XNYQSB/start")
@@ -88,7 +89,7 @@ def submit_form(count):
         write_log("Submit error: " + str(e))
     finally:
         browser.close()
-        logstr = "{} Submission {}: Success".format(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()), count)
+        logstr = "{} Submission {} {}: Success".format(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()), count, usern)
         if not flag:
             logstr = logstr.replace("Success", "Failure")
         write_log(logstr)
@@ -97,9 +98,23 @@ def submit_form(count):
 
 if __name__=="__main__":
     count = 0
+    tmpuser = username[:]
+    tmppass = password[:]
+    succuser = []
     while count < 11:
         count += 1
-        if submit_form(count):
+        for index in range(len(username)):
+            if submit_form(count, username[index], password[index]):
+                tmpuser.remove(username[index])
+                tmppass.remove(password[index])
+                succuser.append(username[index])
+        username = tmpuser[:]
+        password = tmppass[:]
+        if len(username) == 0:
             break
     if secret != "":
-        push_wechat()
+        push_wechat(succuser)
+    if flag:
+        sys.exit(0)
+    else:
+        sys.exit(1)
