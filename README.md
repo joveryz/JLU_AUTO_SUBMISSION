@@ -17,7 +17,7 @@ Simple configuration is required, just Google it.
 
 Please fill in the following vars. Multiple users can be filled in to submit.
 
-Use `logpath` to specify the log storage path, otherwise please leave it as it is.
+(Recommended) Use `logpath` to specify the log storage path, otherwise please leave it as it is.
 
 ```python
 # personal info
@@ -26,13 +26,15 @@ password = ["XXX", "XXX"]
 logpath = r""
 ```
 
-Then you can run `submit.py` to check the result.
+Then you can run `python3 submit.py` to check the result.
 
 ## Advanced usage
 
 - WeChat notification
 
-Please fill in the following vars to use WeChat notification.
+Please refer to the WeChat Enterprise [API doc](https://work.weixin.qq.com/api/doc/90000/90003/90487).
+
+(Recommended) Please fill in the following vars to use WeChat notification.
 
 ```python
 # Push
@@ -59,8 +61,6 @@ ele = browser.find_element_by_xpath('/html/body/div[4]/form/div/div[2]/div[3]/di
 ele.send_keys("上海市")
 ele.send_keys(Keys.ENTER)
 ```
-
-These codes should be inserted between lines 30 and 34.
 
 # Future
 
